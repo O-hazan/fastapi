@@ -2,9 +2,9 @@ import datetime, uuid
 from email import message
 from distutils.log import error
 from os import stat
-import model as mdStat
+import app.model as mdStat
 
-from pg_db import database, stats
+from app.pg_db import database, stats
 from fastapi import FastAPI, HTTPException  
 from typing import List
 from passlib.context import CryptContext

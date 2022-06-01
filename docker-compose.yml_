@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  db:
+    container_name: DB
+    image: ea49
+    restart: always
+    ports:
+      - 5432:5432
+
+  app:
+    container_name: app
+    image: fastapi_app
+    build: .
+    volumes:
+      - ./app/:/app/
+    command: uvicorn app.api.server:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    restart: always

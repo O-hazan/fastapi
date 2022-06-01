@@ -1,0 +1,40 @@
+version: "3.4"
+
+services:
+  postgresql_database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=postgres_database
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=admin1234
+    ports:
+      - "5050:80"
+    restart: always
+    volumes:
+      - pgadmin:/root/.pgadmin
+  app:
+    container_name: app
+    image: fastapi_app
+    build: .
+    volumes:
+      - ./app/:/app/
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 5432
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgresql_database
+    restart: always
+volumes:
+  database-data:
+  pgadmin:
