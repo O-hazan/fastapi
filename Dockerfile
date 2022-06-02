@@ -1,18 +1,13 @@
-# 
-FROM python:3.8
+FROM python:3.9
 
-# 
-WORKDIR /fastapi
+WORKDIR /app
 
-# 
-COPY ./requirements.txt /fastapi/requirements.txt
+COPY requirements.txt .
 
-# 
-RUN pip install --no-cache-dir --upgrade -r /fastapi/requirements.txt
+RUN pip install -r requirements.txt
 
-# 
-COPY ./app /fastapi/app
+EXPOSE 8000
 
+COPY . .
 
-# 
-CMD ["uvicorn", "app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

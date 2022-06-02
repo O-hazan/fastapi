@@ -35,9 +35,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# @app.on_event("startup")
+# async def startup():
+#     await database.connect()
+    
 @app.on_event("startup")
 async def startup():
-    await database.connect()
+    if not database.is_connected:
+        await database.connect()
 
 @app.on_event("shutdown")
 async def shutdown():

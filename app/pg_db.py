@@ -1,7 +1,7 @@
 import databases, sqlalchemy
 
 ## Postgres Database
-DATABASE_URL = "postgresql://myuser:123456@omer:5432/postgres_database"
+DATABASE_URL = "postgresql://myuser:123456@localhost:5432/postgres_database"
 # postgresql://usertest:usertest222@127.0.0.1:5432/dbtest
 database = databases.Database(DATABASE_URL)
 metadata = sqlalchemy.MetaData()
