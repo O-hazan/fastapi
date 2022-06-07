@@ -3,12 +3,7 @@ import os
 
 ## Postgres Database
 DATABASE_URL = os.environ["DATABASE_URL"]
-<<<<<<< HEAD
-# DATABASE_URL = "postgresql://myuser:123456@localhost:5432/postgres_database"
-
-=======
 #DATABASE_URL = "postgresql://myuser:123456@localhost:5432/postgres_database"
->>>>>>> 59442b9ca21977a5cbc5994e891cb03a9be3e547
 # postgresql://usertest:usertest222@127.0.0.1:5432/dbtest
 
 database = databases.Database(DATABASE_URL)
