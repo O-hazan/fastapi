@@ -6,10 +6,12 @@ services:
     build: .
     # command: uvicorn app.main:app --host 0.0.0.0 --port 80
     ports:
-      - "8000:8000"
+      - "8000:80"
     depends_on:
       - postgresql_database
     restart: always
+    environment:
+      - DATABASE_URL=postgresql://myuser:123456@postgresql_database:5432/postgres_database
   postgresql_database:
     container_name: postgresql_database
     image: postgres:latest
