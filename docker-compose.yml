@@ -1,8 +1,8 @@
 version: "3.8"
 
 services:
-  app:
-    container_name: app
+  api:
+    container_name: api
     build: .
     # command: uvicorn app.main:app --host 0.0.0.0 --port 80
     ports:
@@ -12,6 +12,54 @@ services:
     restart: always
     environment:
       - DATABASE_URL=postgresql://myuser:123456@postgresql_database:5432/postgres_database
+  web:
+    container_name: web
+    build: /home/ubuntu/coding/javascript/mathiapp/Mathiap/
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+  #   restart: always
+  # environment:
+  #   - DATABASE_URL=postgresql://myuser:123456@postgresql_database:5432/postgres_database
+  # wdio:
+  #   container_name: wdio
+  #   build: /home/ubuntu/coding/javascript/wdio/wdio-docker/
+  #   ports:
+  #     - "8008:8008"
+  #   depends_on:
+  #     - selenium-hub
+  #   restart: always
+  #   # environment:
+  #   #   - DATABASE_URL=postgresql://myuser:123456@postgresql_database:5432/postgres_database
+  chrome:
+    image: selenium/node-chrome:4.2.1-20220531
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+  firefox:
+    image: selenium/node-firefox:4.2.1-20220531
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  selenium-hub:
+    image: selenium/hub:4.2.1-20220531
+    container_name: selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+    depends_on:
+      - web
   postgresql_database:
     container_name: postgresql_database
     image: postgres:latest
