@@ -1,19 +1,34 @@
 import datetime, uuid
 from email import message
 from distutils.log import error
+# from os import gallery
+
 from os import stat
 import app.model as mdStat
+from app.pg_db import database, galleries
+from app.pg_db import database, news
+
+# import app.model as mdGallery
 
 from app.pg_db import database, stats
-from fastapi import FastAPI, HTTPException  
+from app.pg_db import database, messages
+
 from typing import List
 from passlib.context import CryptContext
 from typing import Optional
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Response
+from fastapi import Response, HTTPException
+from fastapi.responses import FileResponse
+import os
+from random import randint
+
+import shutil
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+IMAGEDIR = "app/files/"
 
 
 app = FastAPI(
@@ -124,6 +139,31 @@ async def shutdown():
 #     return stats
 
 
+# Not working Need to try and fix it
+
+# @app.post("/video")
+# async def upload_video(file: UploadFile = File(...)):
+#     with open(f'{file.filename}', "wb") as buffer:
+#         shutil.copyfileobj(file.file, buffer) 
+#     return {"file_name": file.filename}
+
+# @app.post("/image")
+# async def upload_image(file: List[UploadFile] = File(...)):
+#     for img in file:
+#         with open(f'{img.filename}', "wb") as buffer:
+#             shutil.copyfileobj(img.file, buffer) 
+#         return {"file_name": 'good'}
+    
+    
+   
+    # WORKS!!!!
+@app.post("/files/") 
+async def create_file(file: bytes = File()):
+    return {"file_name": len(file)}
+
+
+
+
 @app.get("/stats", response_model=List[mdStat.StatList], tags=["stat"])
 async def get_stat():
     query = stats.select()
@@ -152,6 +192,7 @@ async def delete_stat(stat: mdStat.StatDelete):
     })
 
     return message[0]
+ 
     
 @app.post("/stats", response_model=mdStat.StatList, tags=["stat"])
 async def add_stat(stat: mdStat.StatEntry):     
@@ -163,18 +204,171 @@ async def add_stat(stat: mdStat.StatEntry):
         hight  = stat.hight,
     ) 
     
-
     await database.execute(query)
     return  {
         "id": gID,
         "age": stat.age,
         "weight": stat.weight,
         "hight": stat.hight
+    } 
+   
+   
+   
+   
+   
+   
+ # lksjdasjdljkhadjsdas
+
+@app.post("/images/")
+async def create_upload_file(file: UploadFile = File(...)):
+
+    file.filename = f"{file.filename}"
+    contents = await file.read()  # <-- Important!
+
+    # example of how you can save the file
+    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+        f.write(contents)
+
+    return {"filename": file.filename}
+
+
+@app.get("/images/{imageId}")
+async def read_random_file():
+
+    # get a random file from the image directory
+    files = os.listdir(IMAGEDIR)
+    random_index = randint(0, len(files) - 1)
+
+    path = f"{IMAGEDIR}{files[random_index]}"
+    
+    # notice you can use FileResponse now because it expects a path
+    return FileResponse(path)
+   
+   
+   
+@app.get("/gallery", response_model=List[mdStat.Gallery], tags=["gallery"])
+async def get_gallery():
+    query = galleries.select()
+    return await database.fetch_all(query)
+ 
+@app.delete("/gallery/{galleryId}", tags=["gallery"])
+async def delete_gallery(gallery: mdStat.GalleryDelete):
+    query = galleries.select().where(galleries.c.id == gallery.id)
+    result = await database.execute(query)
+    message =[]
+    if not result:
+        raise HTTPException(
+            status_code=404, detail=f"Image with ID {gallery.id} not found"
+        )
+    else:
+        query = galleries.delete().where(galleries.c.id == gallery.id)
+        await database.execute(query)
+        message.append({
+        "status" : True,
+        "message": "This image has been deleted successfully." 
+    })
+
+    return message[0]
+
+    
+@app.post("/gallery", response_model=mdStat.Gallery, tags=["gallery"])
+async def add_gallery(gallery: mdStat.GalleryEntry):     
+    gID   = str(uuid.uuid4().int & (1<<64)-19518405196747027403)
+    query = galleries.insert().values(
+        id     = gID,
+        path    = gallery.path,
+        desc = gallery.desc,
+    ) 
+    
+    await database.execute(query)
+    return  {
+        "id": gID,
+        "path": gallery.path,
+        "desc": gallery.desc,
     }
+    
+    
+    # This is a start 
+@app.get("/message", response_model=List[mdStat.Message], tags=["message"])
+async def get_message():
+    query = messages.select()
+    return await database.fetch_all(query)
+ 
+@app.delete("/message/{messageId}", tags=["message"])
+async def delete_message(message: mdStat.MessageDelete):
+    query = messages.select().where(messages.c.id == message.id)
+    result = await database.execute(query)
+    message1 =[]
+    if not result:
+        raise HTTPException(
+            status_code=404, detail=f"Image with ID {message.id} not found"
+        )
+    else:
+        query = messages.delete().where(messages.c.id == message.id)
+        await database.execute(query)
+        message1.append({
+        "status" : True,
+        "message": "This message has been deleted successfully." 
+    })
 
-        
+    return message1[0]
+
+    
+@app.post("/message", response_model=mdStat.Message, tags=["message"])
+async def add_message(message: mdStat.MessageEntry):     
+    gID   = str(uuid.uuid4().int & (1<<64)-19518405196747027403)
+    query = messages.insert().values(
+        id     = gID,
+        title    = message.title,
+        sender = message.sender,
+        message = message.message,
+    ) 
+    
+    await database.execute(query)
+    return  {
+        "id": gID,
+        "title": message.title,
+        "sender": message.sender,
+        "message": message.message,
+
+    }  
 
 
+@app.get("/feed", response_model=List[mdStat.News], tags=["feed"])
+async def get_news():
+    query = news.select()
+    return await database.fetch_all(query)
+ 
+@app.delete("/feed/{feedId}", tags=["feed"])
+async def delete_news(feed: mdStat.NewsDelete):
+    query = news.select().where(news.c.id == feed.id)
+    result = await database.execute(query)
+    message1 =[]
+    if not result:
+        raise HTTPException(
+            status_code=404, detail=f"news with ID {news.id} not found"
+        )
+    else:
+        query = news.delete().where(news.c.id == feed.id)
+        await database.execute(query)
+        message1.append({
+        "status" : True,
+        "message": "This news has been deleted successfully." 
+    })
+    return message1[0]
+  
+@app.post("/feed", response_model=mdStat.News, tags=["feed"])
+async def add_news(feed: mdStat.NewsEntry):     
+    gID   = str(uuid.uuid4().int & (1<<64)-19518405196747027403)
+    query = news.insert().values(
+        id     = gID,
+        content    = feed.content,
+    ) 
+    await database.execute(query)
+    return  {
+        "id": gID,
+        "content": feed.content,
+    }  
 
 
 
