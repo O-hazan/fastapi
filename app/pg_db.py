@@ -4,11 +4,11 @@ import psycopg2
 
 
 ## Postgres Database
-# DATABASE_URL = 'postgresql://nlipxarhtxeupm:78a61e9596b97351abaad96528a80bc228e7413d28aef8c7dccc377f0997879c@ec2-34-242-84-130.eu-west-1.compute.amazonaws.com:5432/de2nkfj8f5c9r8'
-DATABASE_URL = os.environ["DATABASE_URL"]
+DATABASE_URL = 'postgresql://nlipxarhtxeupm:78a61e9596b97351abaad96528a80bc228e7413d28aef8c7dccc377f0997879c@ec2-34-242-84-130.eu-west-1.compute.amazonaws.com:5432/de2nkfj8f5c9r8'
+# DATABASE_URL = os.environ["DATABASE_URL"]
 # added when trying to connect to Heroku
 
-# conn = psycopg2.connect(DATABASE_URL, sslmode='require') 
+conn = psycopg2.connect(DATABASE_URL, sslmode='require') 
 # DATABASE_URL = "postgresql://myuser:123456@localhost:5432/postgres_database"
 # postgresql://usertest:usertest222@127.0.0.1:5432/dbtest
 
