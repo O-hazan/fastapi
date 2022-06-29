@@ -13,8 +13,8 @@ services:
       - postgresql_database
     restart: always
     environment:
-      - DATABASE_URL=postgresql://myuser:123456@postgresql_database:5432/postgres_database
-      # - DATABASE_URL=postgresql://nlipxarhtxeupm:78a61e9596b97351abaad96528a80bc228e7413d28aef8c7dccc377f0997879c@ec2-34-242-84-130.eu-west-1.compute.amazonaws.com:5432/de2nkfj8f5c9r8
+      # - DATABASE_URL=postgresql://myuser:123456@postgresql_database:5432/postgres_database
+      - DATABASE_URL=postgresql://nlipxarhtxeupm:78a61e9596b97351abaad96528a80bc228e7413d28aef8c7dccc377f0997879c@ec2-34-242-84-130.eu-west-1.compute.amazonaws.com:5432/de2nkfj8f5c9r8
 
   # web:
   #   container_name: web
