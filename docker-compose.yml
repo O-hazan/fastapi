@@ -13,9 +13,9 @@ services:
       - postgresql_database
     restart: always
     environment:
-      - DATABASE_URL = postgres://smjzhatreukulg:f0814424648525098f9c827986b6d1c8fe00b1cb3edf2e6cc90b04f1bdf42d3c@ec2-3-219-52-220.compute-1.amazonaws.com:5432/d2ss7j4k7frufr
+      # - DATABASE_URL = postgres://smjzhatreukulg:f0814424648525098f9c827986b6d1c8fe00b1cb3edf2e6cc90b04f1bdf42d3c@ec2-3-219-52-220.compute-1.amazonaws.com:5432/d2ss7j4k7frufr
 
-      # - DATABASE_URL = postgres://hsdfphqlqmcsps:1c007474776a6b9ff2d7a3c0bdbabfc3a6676659048f787c93ba2edb633b9c34@ec2-34-252-216-149.eu-west-1.compute.amazonaws.com:5432/d244otd1dv2j6i
+      - DATABASE_URL = postgres://hsdfphqlqmcsps:1c007474776a6b9ff2d7a3c0bdbabfc3a6676659048f787c93ba2edb633b9c34@ec2-34-252-216-149.eu-west-1.compute.amazonaws.com:5432/d244otd1dv2j6i
 
       # - DATABASE_URL=postgresql://myuser:123456@postgresql_database:5432/postgres_database
       # - -- OLD -- DATABASE_URL=postgresql://nlipxarhtxeupm:78a61e9596b97351abaad96528a80bc228e7413d28aef8c7dccc377f0997879c@ec2-34-242-84-130.eu-west-1.compute.amazonaws.com:5432/de2nkfj8f5c9r8
