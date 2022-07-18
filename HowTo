@@ -1,0 +1,4 @@
+File: pg_db.py Changes: for Live on Heruko with docker - DATABASE_URL =
+'postgresql://nlipxarhtxeupm:78a61e9596b97351abaad96528a80bc228e7413d28aef8c7dccc377f0997879c@ec2-34-242-84-130.eu-west-1.compute.amazonaws.com:5432/de2nkfj8f5c9r8'
+for local with docker - DATABASE_URL = os.environ["DATABASE_URL"] Change
+environment in docker compose file
