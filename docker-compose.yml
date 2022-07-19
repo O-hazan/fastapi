@@ -9,13 +9,13 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
     ports:
       - "8000:80"
-    # depends_on:
-    #   - postgresql_database
+    depends_on:
+      - postgresql_database
     restart: always
     environment:
-      # - DATABASE_URL = postgres://smjzhatreukulg:f0814424648525098f9c827986b6d1c8fe00b1cb3edf2e6cc90b04f1bdf42d3c@ec2-3-219-52-220.compute-1.amazonaws.com:5432/d2ss7j4k7frufr
+      - DATABASE_URL = postgres://smjzhatreukulg:f0814424648525098f9c827986b6d1c8fe00b1cb3edf2e6cc90b04f1bdf42d3c@ec2-3-219-52-220.compute-1.amazonaws.com:5432/d2ss7j4k7frufr
 
-      - DATABASE_URL = postgres://blxsdwppssurjd:a66c484545a15835d10746ad930d8686d304e7a06defff5a5dab0306b230d869@ec2-54-228-32-29.eu-west-1.compute.amazonaws.com:5432/d28hmilckokoaq
+      # - DATABASE_URL = postgres://blxsdwppssurjd:a66c484545a15835d10746ad930d8686d304e7a06defff5a5dab0306b230d869@ec2-54-228-32-29.eu-west-1.compute.amazonaws.com:5432/d28hmilckokoaq
 
       # - DATABASE_URL=postgresql://myuser:123456@postgresql_database:5432/postgres_database
       # - -- OLD -- DATABASE_URL=postgresql://nlipxarhtxeupm:78a61e9596b97351abaad96528a80bc228e7413d28aef8c7dccc377f0997879c@ec2-34-242-84-130.eu-west-1.compute.amazonaws.com:5432/de2nkfj8f5c9r8
@@ -77,17 +77,17 @@ services:
   #     - "4444:4444"
   #   depends_on:
   #     - web
-#   postgresql_database:
-#     container_name: postgresql_database
-#     image: postgres:latest
-#     volumes:
-#       - postgres_data:/var/lib/postgresql/data/
-#     ports:
-#       - "5432:5432"
-#     environment:
-#       - POSTGRES_USER=myuser
-#       - POSTGRES_PASSWORD=123456
-#       - POSTGRES_DB=postgres_database
-#     restart: always
-# volumes:
-#   postgres_data:
+  postgresql_database:
+    container_name: postgresql_database
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=postgres_database
+    restart: always
+volumes:
+  postgres_data:
